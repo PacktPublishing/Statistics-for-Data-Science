@@ -1,0 +1,13 @@
+# --- chapter 9
+
+# --- set up the data
+Set.seed(1)
+X <- runif(7)
+
+
+#---manual scale method
+(x – mean(x)) /sd(x)
+# --- scale using the function 
+Scale(x)
+
+# --- end of chapter 9

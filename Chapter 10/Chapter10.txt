@@ -1,0 +1,71 @@
+# --- chapter 10
+
+> magic <- read.csv("magic04.data", header = FALSE)
+> names(magic) <- c("FLENGTH", "FWIDTH", "FSIZE", "FCONC", "FCONC1",
+  "FASYM", "FM3LONG", "FM3TRANS", "FALPHA", "FDIST", "CLASS")
+> magic$CLASS <- as.factor(ifelse(magic$CLASS =='g', 1, -1))
+
+> library(caret)
+> set.seed(33711209)
+> magic_sampling_vector <- createDataPartition(magic$CLASS, 
+                             p = 0.80, list = FALSE)
+> magic_train <- magic[magic_sampling_vector, 1:10]
+> magic_train_output <- magic[magic_sampling_vector, 11]
+> magic_test <- magic[-magic_sampling_vector, 1:10]
+> magic_test_output <- magic[-magic_sampling_vector, 11]
+> magic_pp <- preProcess(magic_train, method = c("center", 
+                                                 "scale"))
+> magic_train_pp <- predict(magic_pp, magic_train)
+> magic_train_df_pp <- cbind(magic_train_pp, 
+                             CLASS = magic_train_output)
+> magic_test_pp <- predict(magic_pp, magic_test)
+> library(nnet)
+> n_model <- nnet(CLASS ~ ., data = magic_train_df_pp, size = 1)
+> n_test_predictions <- predict(n_model, magic_test_pp,
+                                type = "class")
+> (n_test_accuracy <- mean(n_test_predictions ==  
+                           magic_test_output))
+[1] 0.7948988
+AdaBoostNN <- function(training_data, output_column, M,  
+                       hidden_units) {
+  require("nnet")
+  models <- list()
+  alphas <- list()
+  n <- nrow(training_data)
+  model_formula <- as.formula(paste(output_column, '~ .', sep = ''))
+  w <- rep((1/n), n)
+  for (m in 1:M) {
+    model <- nnet(model_formula, data = training_data, 
+                size = hidden_units, weights = w)
+    models[[m]] <- model
+    predictions <- as.numeric(predict(model, 
+                    training_data[, -which(names(training_data) ==
+                    output_column)], type = "class"))
+    errors <- predictions != training_data[, output_column]
+    error_rate <- sum(w * as.numeric(errors)) / sum(w)
+    alpha <- 0.5 * log((1 - error_rate) / error_rate)
+    alphas[[m]] <- alpha
+    temp_w <- mapply(function(x, y) if (y) { x * exp(alpha) } 
+                    else { x * exp(-alpha)}, w, errors)
+    w <- temp_w / sum(temp_w)
+  }
+  return(list(models = models, alphas = unlist(alphas)))
+}
+AdaBoostNN.predict <- function(ada_model, test_data) {
+  models <- ada_model$models
+  alphas <- ada_model$alphas
+  prediction_matrix <- sapply(models, function (x) 
+             as.numeric(predict(x, test_data, type = "class")))
+  weighted_predictions <- t(apply(prediction_matrix, 1, 
+             function(x) mapply(function(y, z) y * z, x, alphas)))
+  final_predictions <- apply(weighted_predictions, 1, 
+             function(x) sign(sum(x)))
+  return(final_predictions)
+}
+> ada_model <- AdaBoostNN(magic_train_df_pp, 'CLASS', 10, 1)
+> predictions <- AdaBoostNN.predict(ada_model, magic_test_pp, 
+                                    'CLASS')
+> mean(predictions == magic_test_output)
+ [1] 0.804365
+
+# --- end chapter 10

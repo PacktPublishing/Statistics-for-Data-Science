@@ -1,0 +1,28 @@
+# --- rundamentry example to organize our data
+# --- load data into variable called mydata
+
+mydata = read.csv('f:/Worker/DeliveryProjects.csv',header=T)
+
+# --- setting seed so we get same data split each time
+# --- we'll use 100 for seed
+
+set.seed(100) 
+
+# --- total number of rows in data
+nall = nrow(mydata) 
+
+# --- number of rows for train,70%
+ntrain = floor(0.7 * nall) 
+
+# --- number of rows for test, 30%
+ntest = floor(0.3* nall) 
+
+index = seq(1:nall)
+
+# --- train data set
+trainIndex = sample(index, ntrain) 
+
+testIndex = index[-train]
+ 
+train = mydata[trainIndex,]
+test = mydata[test,]

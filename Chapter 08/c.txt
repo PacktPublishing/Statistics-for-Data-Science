@@ -1,0 +1,11 @@
+# --- load scores from 5 rounds of testing
+v <-c(90,80, 89,72, 90)
+
+# -- create an image file for the visualization for later use
+png(file = "f:/learning curve.png", type = c("windows", "cairo", "cairo-png"))
+
+# -- plot the model scores round by round
+plot(v, type = "o", col = "red", xlab = "Round", ylab = "Score", main = "Learning Curve")
+
+# -- close output 
+dev.off()

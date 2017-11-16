@@ -1,0 +1,61 @@
+# --- chapter 11
+
+# --- load the data
+german_raw<- read.table("german.data", quote = "\"")
+
+names(german_raw) <- c("checking", "duration", "creditHistory", 
+"purpose", "credit", "savings", "employment", "installmentRate", 
+"personal", "debtors", "presentResidence", "property", "age", 
+"otherPlans", "housing", "existingBankCredits", "job", 
+"dependents", "telephone", "foreign", "risk")
+
+
+library(caret)
+dummies <- dummyVars(risk ~ ., data = german_raw)
+german<- data.frame(predict(dummies, newdata = german_raw), 
+                       risk = factor((german_raw$risk - 1)))
+dim(german)
+[1] 1000   62
+
+set.seed(977)
+german_sampling_vector<- createDataPartition(german$risk, 
+                                      p = 0.80, list = FALSE)
+german_train<- german[german_sampling_vector,]
+german_test<- german[-german_sampling_vector,]
+
+class_weights<- c(1, 5)
+names(class_weights) <- c("0", "1")
+class_weights
+0 1 
+1 5
+
+set.seed(2423)
+german_radial_tune<- tune(svm,risk ~ ., data = german_train, 
+  kernel = "radial", ranges = list(cost = c(0.01, 0.1, 1, 10, 100), 
+  gamma = c(0.01, 0.05, 0.1, 0.5, 1)), class.weights = class_weights)
+german_radial_tune$best.parameters
+   cost gamma
+9  10  0.05
+
+german_radial_tune$best.performance
+[1] 0.26
+
+german_model<- german_radial_tune$best.model
+test_predictions<- predict(german_model, german_test[,1:61])
+ mean(test_predictions == german_test[,62])
+[1] 0.735
+
+table(predicted = test_predictions, actual = german_test[,62])
+         actual
+predicted   0   1
+        0 134  47
+        1   6  13
+
+set.seed(2423)
+german_radial_tune_unbiased<- tune(svm,risk ~ ., 
+  data = german_train, kernel = "radial", ranges = list( 
+cost = c(0.01, 0.1, 1, 10, 100), gamma = c(0.01, 0.05, 0.1, 0.5, 1)))
+german_radial_tune_unbiased$best.parameters
+  cost gamma
+3    1  0.01
+german_radial_tune_unbiased$best.performance

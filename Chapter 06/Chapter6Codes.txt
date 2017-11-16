@@ -1,0 +1,100 @@
+# --- load our project results data
+
+MyData <- read.csv(file="c:/Worker/HoursBilledProfit.csv", head-er=TRUE, sep=",")
+
+# --- build our scatter plot on the relationship between our
+# --- variables
+
+scatter.smooth(x=MyData$HoursBilled, y=MyData$Profit, main="Hours Billed vs. Profit")  # scatterplot
+# ---------------------
+# --- load our project results data
+
+MyData <- read.csv(file="c:/Worker/HoursBilledProfit.csv", head-er=TRUE, sep=",")
+
+par(mfrow=c(1, 2))  # divide graph area in 2 columns
+
+# --- box plot for hours billed
+
+boxplot(MyData$HoursBilled, main="Hours Billed", sub=paste("Outlier rows: ", boxplot.stats(MyData$HoursBilled)$out))  
+
+# --- box plot for Profit
+
+boxplot(MyData$Profit, main="Profit", sub=paste("Outlier rows: ", boxplot.stats(MyData$Profit)$out)) 
+
+# --------------------------------
+
+# --- load our project results data
+
+MyData <- read.csv(file="c:/Worker/HoursBilledProfit.csv", header=TRUE, sep=",")
+ibrary(e1071)
+
+# --- divide graph area in 2 columns
+
+
+par(mfrow=c(1, 2))  
+
+# --- density plot for profit
+plot(density(MyData$Profit), main="Density Plot: Profit", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(MyData$Profit), 2)))  
+polygon(density(MyData$Profit), col="red")
+
+# --- density plot for hours billed
+
+plot(density(MyData$HoursBilled), main="Density Plot: Hours Billed", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(MyData$HoursBilled), 2)))  
+polygon(density(MyData$HoursBilled), col="red")
+
+
+# -----------------------------
+
+cor(MyData$HoursBilled, MyData$Profit)
+
+# ---------------------------------
+
+# --- build linear regression model on all of our
+# --- project results data
+
+alinearMod <- lm(ProjectManagement ~ Profit, data=MyData)
+print(alinearMod)
+
+#----------------------------------
+alinearMod<- lm(ProjectManagement~ Profit, data=MyData)
+Print(alinearMod)
+
+ ---
+# --- first load our project results data
+# --- from our CSV file into the object MyData
+
+MyData <- read.csv(file="c:/Worker/ProjectManagementProfit.csv", header=TRUE, sep=",")
+
+# --- next we are setting the “sample seed”
+# --- to reproduce results of random sampling
+
+set.seed(100)  
+trainingRowIndex <- sample(1:nrow(MyData), 0.8*nrow(MyData))  
+
+# --- create our “chunk” of 
+# --- model training data
+
+trainingData <- MyData [trainingRowIndex,]
+
+# --- create our “chunk of 
+# --- test data  
+
+testData <- MyData [-trainingRowIndex,] 
+
+# ----------------------------------------------------------------
+
+# --- Build the model on training data 
+
+lmMod <- lm(ProjectManagement ~ Profit, data=trainingData) 
+
+# ----------------------------------------------------------------
+
+# --- predict project profitability 
+
+ProfitPred <- predict(lmMod, testData)
+  
+# --- generate the summary of the model 
+
+
+summary (lmMod) 
+

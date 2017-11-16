@@ -1,0 +1,991 @@
+# --  chapter 1 - no codes
+# --- chapter 2 - no codes
+# --- chapter 3: 
+
+MyFile <-"C:/GammingData/SlotsResults.csv"
+MyData <- read.csv(file=MyFile, header=TRUE, sep=",")
+boxplot(MyData[11],main='Gamming Data Review', ylab = "Coin-in")
+noNegs <- subset(MyData, MyData[11]>0)
+boxplot(noNegs[11],main='Gamming Data Review', ylab = "Coin-in")
+noOutliers <-subset(noNegs, noNegs[11]<1500)
+boxplot(noOutliers[11],main='Gamming Data Review', ylab = "Coin-in")
+write.csv(noOutliers, file = "C:/GammingData/MyData_lessOutliers.csv")
+noOutliers[“Age”]<-as.numeric(noOutliers[“Age”])
+MyFile <-"C:/GammingData/SlotsByMachine.csv"
+MyData <- read.csv(file=MyFile, header=TRUE, sep=",")
+
+MyData$Date<-paste(substr(MyData$Date,6,7), substr(MyData$Date,9,10), substr(MyData$Date,1,4),sep="/")
+MyData$Coinin<-MyData$Coinin * 1.4
+
+getRate <- function(arg){    
+    if(arg=="GPB") {
+      myRate <- 1.4
+    }
+    if(arg=="CAD") {
+      myRate <- 1.34
+    }
+    return(myRate)
+}
+
+source("C:/GammingData/CurerncyLogic.R")
+MyFile <-"C:/GammingData/SlotsByMachine.csv"
+MyData <- read.csv(file=MyFile, header=TRUE, sep=",")	
+MyData$Coin <- MyData$Coinin * getRate("CAD")
+
+lbs = c("Male", "Female")
+pie(table(MyData), main="Gambling by Gender")
+setGender <- function(arg){     
+    if(substr(arg,1,1)=="0" | toupper(substr(arg,1,1))=="M") { Gender <- "MALE" }
+    if(substr(arg,1,1)=="1" | toupper(substr(arg,1,1))=="F") { Gender <- "FEMALE" }
+    return(Gender)
+}
+MyFile <-"C:/GammingData/Gender.txt"
+MyData <- read.csv(file=MyFile, header=TRUE, sep=",")
+GenderData <-data.frame(nrow(MyData))
+for(i in 2:nrow(MyData))
+{
+   x<-as.character(MyData[i,1])   
+   GenderData[i,1] <-setGender(x)
+}
+
+lbls = c("Male", "Female")
+pie(table(GenderData), labels=lbls, main="Gambling by Gender")
+ 
+scale(MyData[11], center = TRUE, scale = TRUE)
+
+data.dat$trans_Y <-sqrt(data.dat$Y)
+
+# --- chapter 4:
+
+table(chapter4["current_smoker"])
+
+hist(table(Chapter4["age"]))
+
+# -- read our data into a data frame object
+Chapter4<-read.csv('c:/chapter4/Chapter4.txt')
+
+# -- initialize holders for counting cases
+a1 <-0;a2 <-0;a3 <-0;a4 <-0;a5 <-0;a6 <-0
+
+# -- read through the cases and count smokers by age group
+for(i in 2:nrow(Chapter4))
+{
+if (as.numeric(Chapter4[i,"age"]) < 22 & Chapter4[i,"current_smoker"]=="Yes") {a1 <- a1 + 1}
+if (as.numeric(Chapter4[i,"age"]) > 21 & as.numeric(Chapter4[i,"age"]) < 35 & Chapter4[i,"current_smoker"]=="Yes") {a2 <- a2 + 1}
+if (as.numeric(Chapter4[i,"age"]) > 34 & as.numeric(Chapter4[i,"age"]) < 45 & Chapter4[i,"current_smoker"]=="Yes") {a3 <- a3 + 1}
+if (as.numeric(Chapter4[i,"age"]) > 44 & as.numeric(Chapter4[i,"age"]) < 55 & Chapter4[i,"current_smoker"]=="Yes") {a4 <- a4 + 1}
+if (as.numeric(Chapter4[i,"age"]) > 54 & as.numeric(Chapter4[i,"age"]) < 65 & Chapter4[i,"current_smoker"]=="Yes") {a5 <- a5 + 1}
+if (as.numeric(Chapter4[i,"age"]) > 64) {a6 <- a6 + 1}
+}
+
+# -- build a pie chart
+slices <- c(a1, a2, a3, a4, a5, a6)
+lbls <- c("under 21", "22-34","35-44","45-54","55-64", "65 & over")
+
+# -- create the actual visualization
+pie(slices, labels = lbls, main="Smokers by Age Range")
+
+# --- create a subset of smokers only cases
+mysub <- subset(Chapter4,Chapter4["current_smoker"]=="Yes")
+
+# --- confirm the row count
+nrow(mysub)
+
+# --- create a random sample of 30 smokers
+mysample <- mysub[sample(1:nrow(mysub), 30,
+   replace=FALSE),]
+
+# --- confirm the row count in our random case sample
+nrow(mysample)
+
+# -- perform the hierarchical cluster analysis
+smokerclust<-hclust(dist(mysample))
+
+# -- create results in a dendrogram
+plot(smokerclust)
+
+# --- chapter 5:
+# --- read our data file into "x"
+x <-read.table("c:/Worker/SamplesSalesTrans.csv", sep=",", header = FALSE, skip = 1)
+
+# --- convert “x” into a data frame object, then set the data frame to
+# --- hold only the sales_date 
+
+data.df <- data.frame(x)
+data.df <- data.df[,4]
+
+# --- use the R commands substr and regexpr to strip out just the year and # --- month from the sales date field 
+YearsInData = substr(substr(data.df[],(regexpr('/',data.df[])+1),11),( regexpr('/',substr(data.df[],(regexpr('/',data.df[])+1),11))+1),11)
+MonthsInData = substr(data.df[],(regexpr('/',data.df[])-1),1)
+# --- use sort and unique functions to list our year(s) and month(s)
+sort(unique(YearsInData))
+sort(unique(MonthsInData))
+
+# --- read data
+data.df<-data.frame(x)
+
+# --- initialize counters
+JanuarySales <-0
+FebruarySales <-0
+MarchSales <-0
+
+# --- loop and count
+for(i in 1:nrow(data.df))
+{
+    MonthInData = substr(data.df[i,4],(regexpr('/',data.df[i,4])-1),1)
+if (MonthInData == '1') {JanuarySales <- JanuarySales + data.df[i,3]}
+if (MonthInData == '2') {FebruarySales <- FebruarySales + + data.df[i,3]}
+if (MonthInData == '3') {MarchSales <- MarchSales + + data.df[i,3]}
+}
+
+barplot(c(JanuarySales, FebruarySales, MarchSales), main="Sales Qty by Month", border = "dark blue", legend.text = c("Jan", "Feb", "Mar"), col = c("lightblue", "mistyrose","lightcyan"), sub = "Sales Transactions from File")
+
+# --- read in the data in 
+sales <- read.csv("c:/Worker/SamplesSalesTrans_2.csv")
+
+# --- just moving our original data to a data frame object
+# --- preserving the original 
+data.df<-data.frame(sales.new)
+
+# --- looping through the data and counting quantities 
+# --- type
+
+for(i in 1:nrow(data.df))
+{
+if (data.df[i,2] == 'Online')
+  	{Online <- Online + data.df[i,1] 
+   	 OnlineC <- OnlineC +1} 
+if (data.df[i,2] == 'Television') 	
+	{Television <- Television + data.df[i,1]
+	TelevisionC <- TelevisionC +1} 
+if (data.df[i,2] == 'New Customer') 	
+	{NewCustomer <- NewCustomer + data.df[i,1]
+	NewCustomerC <- NewCustomerC +1} 
+if (data.df[i,2] == 'Retailer') 	
+	{Retailer <- Retailer + data.df[i,1]
+	RetailerC <- RetailerC +1} 
+if (data.df[i,2] == 'Club') 		
+	{Club <- Club + data.df[i,1]
+	ClubC <- ClubC +1} 
+if (data.df[i,2] == 'Discounted') 	
+	{Discounted <- Discounted + data.df[i,1]
+	DiscountedC <- DiscountedC +1} 
+if (data.df[i,2] == 'Repeat') 		
+	{Repeat <- Repeat + data.df[i,1]
+	RepeatC <- RepeatC +1} 
+if (data.df[i,2] == 'Vendor')
+	{Vendor <- Vendor + data.df[i,1]
+	VendorC <- VendorC +1} 
+}
+
+# --- create average or mean for all Online sales quantities
+# --- by first creating a subset of only quanities of that sale 
+# --- type
+OnlineSales.new <-data.df[data.df$sale_type == “Online”,]
+OnlineSalesMean <-mean(OnlineSales.new$quantity)
+
+# --- using the summary totals, you could do the math to calculate # --- the average or mean:
+OnlineMean <- Online/OnlineC
+
+# --- calculate the mean for all sale types:
+MeanAll <-mean(data.df [["quantity"]])
+
+# --- calculate the standard deviation for all sales types:
+StdDAll<-sd(data.df[["quantity"]])
+
+# --- calculate the median for all sales types:
+MeanAll <-mean(data.df [["quantity"]])
+
+
+# --- using the calculated average/mean for each sale type
+temp<-c(Online, Television, NewCustomer, Retailer, Club, Discounted, Repeat, Vendor)
+
+# --- create the histogram
+hist(temp, breaks=8, freq=TRUE, main="Quantity by Sales Type", border="black", col = "gray", xlab="Types: Online, Televsion, New Customer, Retailer, Club, Discounted, Repeat, Vendor")
+abline(v=ref,col="red")
+
+# -- calculate standard distribution of all product quantities
+sd(data.df[["quantity"]])
+
+# --- create a subset of only online sale type quantities
+quantity.new <- data.df[data.df$sale_type == "Online",]
+
+# --- calculate this subsets standard distribution
+StdDOnline<-sd(quantity.new$quantity)
+# --- repeated for each sales type group!
+
+# --- after computing each type, calculate the standard 
+# --- distribution for all sales quantities:
+StdDVendor<-sd(quantity.new$quantity)
+
+# --- combine the totals into “Temp”
+Temp<-c(StdDOnline, StdDTelevision, StdDNewCustomer, StdDRetailer, StdDClub, StdDDiscounted, StdDRepeat, StdDVendor) 
+
+# --- create a simple Line Chart
+plot(Temp, type="o", col="blue",    axes=FALSE, ann=FALSE)
+axis(1, at=1:8, lab=c("Online", "TV","New", "Re-tail","Club","Disc","Rep","Ven"))
+title(ylab="STD DIST", col.lab=rgb(0,0.5,0))
+box()
+
+abline(h=sd(data.df[["quantity"]]), col="green")
+
+
+# --- use sample to create a random sampling of data
+mysample.df <- data.df[sample(1:nrow(data.df), 100, re-place=FALSE),]
+
+
+# --- original visualization
+plot(Temp, type="o", col="blue",    axes=FALSE, ann=FALSE)
+axis(1, at=1:8, lab=c("Online", "TV", "New", "Re-tail","Club","Disc","Rep","Ven"))
+title(ylab="STD DIST", col.lab=rgb(0,0.5,0))
+box()
+
+# --- create a sample population
+mysample.df <- data.df[sample(1:nrow(data.df), 100, re-place=FALSE),] 
+
+# --- draw a water mark from the 
+$ --- samples standard distribution
+abline(h=sd(mysample.df[["quantity"]]), col="green")
+
+# --- calculate our samples variance
+var(mysample.df[["quantity"]])
+
+# --- calculate total variance
+var(data.df[["quantity"]])
+
+# --- create subset of Online quantities
+quantity.new <- data.df[data.df$sale_type == "Online",]
+
+# --- calculate each comparison point
+max(quantity.new[["quantity"]])
+mean(quantity.new[["quantity"]])
+sd(quantity.new[["quantity"]])
+median(quantity.new[["quantity"]])
+min(quantity.new[["quantity"]])
+sum(quantity.new[["quantity"]])
+
+# --- create a data frame object for summarization
+df<-data.frame(8,7)
+
+# --- create our subset of data – this is online sales
+quantity.new <- data.df[data.df$sale_type == "Online",]
+
+# --- calculate comparison points based upon
+# --- our current subset dropping each in a temp
+# --- variable for now (a, b, c, d, e and f)
+a<-max(quantity.new[["quantity"]])
+b<-mean(quantity.new[["quantity"]])
+c<-sd(quantity.new[["quantity"]])
+d<-median(quantity.new[["quantity"]])
+e<-min(quantity.new[["quantity"]])
+f<-sum(quantity.new[["quantity"]])
+
+# --- load our calculations into the data frame object
+# --- just using “i” as an index to the data frame
+i<-1
+df[i,1]<-"Online"
+df[i,2]<-a
+df[i,3]<-b
+df[i,4]<-c
+df[i,5]<-d
+df[i,6]<-e
+df[i,7]<-f
+
+# --- add headings/column names to our data frame object
+names(df)<-c("group", "max", "mean", "sd", "median", "min", "sum")
+
+# --- note: repeat the section of code here that creates a 
+# --- subset and calculates its points for all sale types
+
+# --- display out finished summation model
+df
+
+# --- load our data into a data frame object
+data.df<-data.frame(x)
+
+# --- initialize some counters one for each sales region ID
+R1<-0
+R2<-0
+R3<-0
+R4<-0
+R5<-0
+
+# --- loop through the data and accumulate sale quantities 
+# --- for each sales region
+for(i in 1:nrow(data.df))
+{
+    MonthInData <-data.df[i,6]
+if (MonthInData == '1') {R1 <- R1 + data.df[i,3]}
+if (MonthInData == '2') {R2 <- R2 + data.df[i,3]}
+if (MonthInData == '3') {R3 <- R3 + data.df[i,3]}
+if (MonthInData == '4') {R4 <- R4 + data.df[i,3]}
+if (MonthInData == '5') {R5 <- R5 + data.df[i,3]}
+}
+
+# --- generate our barplot from accumulated data 
+# --- in R1 through R5
+barplot(c(R1, R2, R3, R4, R5), main="Sales Qty by Region", border = "dark blue", legend.text = c("1","2","3", "4", "5"), col = c("lightblue", "mistyrose","lightcyan", "Green", "grey"))
+
+# --- Chapter 5:
+
+myData <-read.csv("SampleSalesTrans.csv")
+colnames(myData)
+summary(myData)
+
+#--- 
+nrow(myData)
+list(unique(myData$product_name))
+
+# ---
+# --- read our data file into "x"
+x <-read.table("c:/Worker/SamplesSalesTrans.csv", sep=",", header = FALSE, skip = 1)
+
+# --- convert “x” into a data frame object, then set the data frame to
+# --- hold only the sales_date 
+
+data.df <- data.frame(x)
+data.df <- data.df[,4]
+
+# --- use the R commands substr and regexpr to strip out just the year and # --- month from the sales date field 
+YearsInData = substr(substr(data.df[],(regexpr('/',data.df[])+1),11),( regexpr('/',substr(data.df[],(regexpr('/',data.df[])+1),11))+1),11)
+MonthsInData = substr(data.df[],(regexpr('/',data.df[])-1),1)
+# --- use sort and unique functions to list our year(s) and month(s)
+sort(unique(YearsInData))
+sort(unique(MonthsInData))
+
+#---
+sort(unique(YearsInData))
+sort(unique(MonthsInData))
+
+# ---
+
+# --- read data
+data.df<-data.frame(x)
+
+# --- initialize counters
+JanuarySales <-0
+FebruarySales <-0
+MarchSales <-0
+
+# --- loop and count
+for(i in 1:nrow(data.df))
+{
+    MonthInData = substr(data.df[i,4],(regexpr('/',data.df[i,4])-1),1)
+if (MonthInData == '1') {JanuarySales <- JanuarySales + data.df[i,3]}
+if (MonthInData == '2') {FebruarySales <- FebruarySales + + data.df[i,3]}
+if (MonthInData == '3') {MarchSales <- MarchSales + + data.df[i,3]}
+}
+
+# ---
+barplot(c(JanuarySales, FebruarySales, MarchSales), main="Sales Qty by Month", border = "dark blue", legend.text = c("Jan", "Feb", "Mar"), col = c("lightblue", "mistyrose","lightcyan"), sub = "Sales Transactions from File")
+
+# --- read in the data in 
+sales <- read.csv("c:/Worker/SamplesSalesTrans_2.csv")
+
+# --- just moving our original data to a data frame object
+# --- preserving the original 
+data.df<-data.frame(sales.new)
+
+# --- looping through the data and counting quantities 
+# --- type
+
+for(i in 1:nrow(data.df))
+{
+if (data.df[i,2] == 'Online')
+  	{Online <- Online + data.df[i,1] 
+   	 OnlineC <- OnlineC +1} 
+if (data.df[i,2] == 'Television') 	
+	{Television <- Television + data.df[i,1]
+	TelevisionC <- TelevisionC +1} 
+if (data.df[i,2] == 'New Customer') 	
+	{NewCustomer <- NewCustomer + data.df[i,1]
+	NewCustomerC <- NewCustomerC +1} 
+if (data.df[i,2] == 'Retailer') 	
+	{Retailer <- Retailer + data.df[i,1]
+	RetailerC <- RetailerC +1} 
+if (data.df[i,2] == 'Club') 		
+	{Club <- Club + data.df[i,1]
+	ClubC <- ClubC +1} 
+if (data.df[i,2] == 'Discounted') 	
+	{Discounted <- Discounted + data.df[i,1]
+	DiscountedC <- DiscountedC +1} 
+if (data.df[i,2] == 'Repeat') 		
+	{Repeat <- Repeat + data.df[i,1]
+	RepeatC <- RepeatC +1} 
+if (data.df[i,2] == 'Vendor')
+	{Vendor <- Vendor + data.df[i,1]
+	VendorC <- VendorC +1} 
+}
+
+# --- create average or mean for all Online sales quantities
+# --- by first creating a subset of only quanities of that sale 
+# --- type
+OnlineSales.new <-data.df[data.df$sale_type == “Online”,]
+OnlineSalesMean <-mean(OnlineSales.new$quantity)
+
+# --- using the summary totals, you could do the math to calculate # --- the average or mean:
+OnlineMean <- Online/OnlineC
+
+# --- calculate the mean for all sale types:
+MeanAll <-mean(data.df [["quantity"]])
+
+# --- calculate the standard deviation for all sales types:
+StdDAll<-sd(data.df[["quantity"]])
+
+# --- calculate the median for all sales types:
+MeanAll <-mean(data.df [["quantity"]])
+
+# --- using the calculated average/mean for each sale type
+temp<-c(Online, Television, NewCustomer, Retailer, Club, Discounted, Repeat, Vendor)
+
+# --- create the histogram
+hist(temp, breaks=8, freq=TRUE, main="Quantity by Sales Type", border="black", col = "gray", xlab="Types: Online, Televsion, New Customer, Retailer, Club, Discounted, Repeat, Vendor")
+abline(v=ref,col="red")
+
+# -- calculate standard distribution of all product quantities
+sd(data.df[["quantity"]])
+
+# --- create a subset of only online sale type quantities
+quantity.new <- data.df[data.df$sale_type == "Online",]
+
+# --- calculate this subsets standard distribution
+StdDOnline<-sd(quantity.new$quantity)
+# --- repeated for each sales type group!
+
+# ---
+
+# --- after computing each type, calculate the standard 
+# --- distribution for all sales quantities:
+StdDVendor<-sd(quantity.new$quantity)
+
+# --- combine the totals into “Temp”
+Temp<-c(StdDOnline, StdDTelevision, StdDNewCustomer, StdDRetailer, StdDClub, StdDDiscounted, StdDRepeat, StdDVendor) 
+
+# --- create a simple Line Chart
+plot(Temp, type="o", col="blue",    axes=FALSE, ann=FALSE)
+axis(1, at=1:8, lab=c("Online", "TV","New", "Re-tail","Club","Disc","Rep","Ven"))
+title(ylab="STD DIST", col.lab=rgb(0,0.5,0))
+box()
+
+abline(h=sd(data.df[["quantity"]]), col="green")
+# --- use sample to create a random sampling of data
+mysample.df <- data.df[sample(1:nrow(data.df), 100, re-place=FALSE),]
+
+# --- original visualization
+plot(Temp, type="o", col="blue",    axes=FALSE, ann=FALSE)
+axis(1, at=1:8, lab=c("Online", "TV", "New", "Re-tail","Club","Disc","Rep","Ven"))
+title(ylab="STD DIST", col.lab=rgb(0,0.5,0))
+box()
+
+# --- create a sample population
+mysample.df <- data.df[sample(1:nrow(data.df), 100, re-place=FALSE),] 
+
+# --- draw a water mark from the 
+$ --- samples standard distribution
+abline(h=sd(mysample.df[["quantity"]]), col="green")
+
+# --- calculate our samples variance
+var(mysample.df[["quantity"]])
+
+# --- calculate total variance
+var(data.df[["quantity"]])
+
+# --- create subset of Online quantities
+quantity.new <- data.df[data.df$sale_type == "Online",]
+
+# --- calculate each comparison point
+max(quantity.new[["quantity"]])
+mean(quantity.new[["quantity"]])
+sd(quantity.new[["quantity"]])
+median(quantity.new[["quantity"]])
+min(quantity.new[["quantity"]])
+sum(quantity.new[["quantity"]])
+# --- create a data frame object for summarization
+df<-data.frame(8,7)
+
+# --- create our subset of data – this is online sales
+quantity.new <- data.df[data.df$sale_type == "Online",]
+
+# --- calculate comparison points based upon
+# --- our current subset dropping each in a temp
+# --- variable for now (a, b, c, d, e and f)
+a<-max(quantity.new[["quantity"]])
+b<-mean(quantity.new[["quantity"]])
+c<-sd(quantity.new[["quantity"]])
+d<-median(quantity.new[["quantity"]])
+e<-min(quantity.new[["quantity"]])
+f<-sum(quantity.new[["quantity"]])
+
+# --- load our calculations into the data frame object
+# --- just using “i” as an index to the data frame
+i<-1
+df[i,1]<-"Online"
+df[i,2]<-a
+df[i,3]<-b
+df[i,4]<-c
+df[i,5]<-d
+df[i,6]<-e
+df[i,7]<-f
+
+# --- add headings/column names to our data frame object
+names(df)<-c("group", "max", "mean", "sd", "median", "min", "sum")
+
+# --- note: repeat the section of code here that creates a 
+# --- subset and calculates its points for all sale types
+
+# --- display out finished summation model
+df
+# --- load our data into a data frame object
+data.df<-data.frame(x)
+
+# --- initialize some counters one for each sales region ID
+R1<-0
+R2<-0
+R3<-0
+R4<-0
+R5<-0
+
+# --- loop through the data and accumulate sale quantities 
+# --- for each sales region
+for(i in 1:nrow(data.df))
+{
+    MonthInData <-data.df[i,6]
+if (MonthInData == '1') {R1 <- R1 + data.df[i,3]}
+if (MonthInData == '2') {R2 <- R2 + data.df[i,3]}
+if (MonthInData == '3') {R3 <- R3 + data.df[i,3]}
+if (MonthInData == '4') {R4 <- R4 + data.df[i,3]}
+if (MonthInData == '5') {R5 <- R5 + data.df[i,3]}
+}
+
+# --- generate our barplot from accumulated data 
+# --- in R1 through R5
+barplot(c(R1, R2, R3, R4, R5), main="Sales Qty by Region", border = "dark blue", legend.text = c("1","2","3", "4", "5"), col = c("lightblue", "mistyrose","lightcyan", "Green", "grey"))
+
+# --- end chapter 5 here
+
+# --- chapter 6
+
+# --- load our project results data
+
+MyData <- read.csv(file="c:/Worker/HoursBilledProfit.csv", head-er=TRUE, sep=",")
+
+# --- build our scatter plot on the relationship between our
+# --- variables
+
+scatter.smooth(x=MyData$HoursBilled, y=MyData$Profit, main="Hours Billed vs. Profit")  # scatterplot
+
+# --- load our project results data
+
+MyData <- read.csv(file="c:/Worker/HoursBilledProfit.csv", head-er=TRUE, sep=",")
+
+par(mfrow=c(1, 2))  # divide graph area in 2 columns
+
+# --- box plot for hours billed
+
+boxplot(MyData$HoursBilled, main="Hours Billed", sub=paste("Outlier rows: ", boxplot.stats(MyData$HoursBilled)$out))  
+
+# --- box plot for Profit
+
+boxplot(MyData$Profit, main="Profit", sub=paste("Outlier rows: ", boxplot.stats(MyData$Profit)$out))  
+
+# --- load our project results data
+
+MyData <- read.csv(file="c:/Worker/HoursBilledProfit.csv", header=TRUE, sep=",")
+ibrary(e1071)
+
+# --- divide graph area in 2 columns
+
+
+par(mfrow=c(1, 2))  
+
+# --- density plot for profit
+plot(density(MyData$Profit), main="Density Plot: Profit", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(MyData$Profit), 2)))  
+polygon(density(MyData$Profit), col="red")
+
+# --- density plot for hours billed
+
+plot(density(MyData$HoursBilled), main="Density Plot: Hours Billed", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(MyData$HoursBilled), 2)))  
+polygon(density(MyData$HoursBilled), col="red")
+
+cor(MyData$HoursBilled,MyData$Profit)
+
+# --- build linear regression model on all of our
+# --- project results data
+
+alinearMod <- lm(ProjectManagement ~ Profit, data=MyData)
+print(alinearMod)
+
+# --- first load our project results data
+# --- from our CSV file into the object MyData
+
+MyData <- read.csv(file="c:/Worker/ProjectManagementProfit.csv", header=TRUE, sep=",")
+
+# --- next we are setting the “sample seed”
+# --- to reproduce results of random sampling
+
+set.seed(100)  
+trainingRowIndex <- sample(1:nrow(MyData), 0.8*nrow(MyData))  
+
+# --- create our “chunk” of 
+# --- model training data
+
+trainingData <- MyData [trainingRowIndex,]
+
+# --- create our “chunk of 
+# --- test data  
+
+testData <- MyData [-trainingRowIndex,] 
+
+# --- Build the model on training data 
+
+lmMod <- lm(ProjectManagement ~ Profit, data=trainingData) 
+
+# --- predict project profitability 
+
+ProfitPred <- predict(lmMod, testData)
+
+# --- generate the summary of the model 
+
+summary (lmMod) 
+
+# --- end chapter 6
+
+# --- chapter 7
+
+# --- build linear regression model using all the  
+# --- project results data
+
+alinearMod <- lm(ProjectManagement ~ Profit, data=MyData)
+# -- create a uniform random number series as X1, X2 and X3
+# --- using runif
+
+x1 <- runif(n=20) 
+x2 <- runif(n=20)
+x3 <- runif(n=20)
+
+# --- Create a new variable from x1 and x2
+x3c <- 10*x1 + x3
+
+# --- create a random number 
+ep <- rnorm(n=20) 
+ 
+y <- x1 + x2 + ep 
+
+# --- using the R lm function to create an ordinary least squares (OLS) # -- fit of 3-variable model using x3 as an independent x3 variable
+
+ols <- lm(y~ x1 + x2 + x3)
+summary(ols)
+
+# ---
+# --- Fit model using ridge regression using independent variables
+
+ridge <- lm.ridge (y ~ x1 + x2 + x3, lambda = seq(0, .1, .001))
+summary(ridge)
+
+# --- load the package
+library(glmnet)
+# --- create our parameter data
+cars_train_mat <- model.matrix(Price ~ .-Saturn, cars_train)[,-1]
+lambdas <- 10 ^ seq(8, -4, length = 250)
+# --- create regression model
+cars_models_ridge <- 
+  glmnet(cars_train_mat, cars_train$Price, alpha = 0, lambda = lambdas)
+
+# --- create a lasso model
+cars_models_lasso <- 
+  glmnet(cars_train_mat, cars_train$Price, alpha = 1, lambda = lambdas)
+# --- print the value of the lambda object of the 100th model
+# --- generated by glmnet
+cars_models_ridge$lambda[100]
+[1] 1694.009
+
+# --- use coef to see 100th model’s coefficient values
+coef(cars_models_ridge)[,100]
+
+
+# --- visualize our model data
+# --- set matrix column-widths and the row-heights
+layout(matrix(c(1, 2), 1, 2))
+
+# --- create ridge regression plot
+plot(cars_models_ridge, xvar = "lambda", main = "Ridge 
+  Regression\n")
+# --- create lasso plot
+plot(cars_models_lasso, xvar = "lambda", main = "Lasso\n")
+# --- use predict function on the lasso model
+predict(cars_models_lasso, type = "coefficients", s = lambda_lasso)
+
+cars_test_mat <- model.matrix(Price ~ . -Saturn, cars_test)[,-1]
+cars_ridge_predictions <- predict(cars_models_ridge, s = 
+                            lambda_ridge, newx = cars_test_mat)
+compute_mse(cars_ridge_predictions, cars_test$Price)
+
+cars_lasso_predictions <- predict(cars_models_lasso, s = 
+                            lambda_lasso, newx = cars_test_mat)
+compute_mse(cars_lasso_predictions, cars_test$Price)
+
+
+# --- end chapter 7
+
+# --- chapter 8
+
+mysql> CREATE TABLE test (a INT NOT NULL AUTO_INCREMENT,
+    ->        PRIMARY KEY (a), KEY(b))
+    ->        ENGINE=MyISAM SELECT b,c FROM test2;
+
+USE AdventureWorks;
+GO
+SET STATISTICS IO  ON
+SET STATISTICS TIME  ON
+
+SELECT p.Name, pr.ProductReviewID
+FROM Production.Product p
+JOIN Production.ProductReview pr
+ON p.ProductID = pr.ProductID
+
+SET STATISTICS IO  OFF
+SET STATISTICS TIME  OFF
+# --- using the R lm function to create an ordinary least squares (OLS) # -- fit of 3-variable model using x3 as an independent x3 variable
+
+ols <- lm(y~ x1 + x2 + x3)
+summary(ols)
+# --- setting seed so we get same data split each time
+# --- we'll use 100 for seed
+
+set.seed(100) 
+
+# --- determine the total number of rows in the data
+# --- using nrow function
+nall = nrow(mydata) 
+
+# --- number of rows for train subset is 70%
+# --- of the total rows
+ntrain = floor(0.7 * nall) 
+
+# --- number of rows for test subset is 30%
+# --- of the total rows
+ntest = floor(0.3* nall) 
+
+index = seq(1:nall)
+
+# --- create the train data subset
+trainIndex = sample(index, ntrain) 
+
+testIndex = index[-train] 
+train = mydata[trainIndex,]
+test = mydata[test,]
+
+# --- load scores from 5 rounds of testing
+v <-c(90,80, 89,72, 90)
+
+# -- plot the model scores round by round
+plot(v, type = "o", col = "red", xlab = "Round", ylab = "Score", main = "Core Technology")
+
+# --- load scores from 5 rounds of testing
+v <-c(90,80, 89,72, 90)
+
+# -- create an image file for the visualization for later use
+png(file = "c:/provenpratice/learning curve.png", type = c("windows", "cairo", "cairo-png"))
+
+# -- plot the model scores round by round
+plot(v, type = "o", col = "red", xlab = "Round", ylab = "Score", main = "Learning Curve")
+
+# -- close output 
+dev.off()
+
+# --- end of chapter 8
+# --- chapter 9
+
+# --- set up the data
+Set.seed(1)
+X <- runif(7)
+
+
+#---manual scale method
+(x – mean(x)) /sd(x)
+# --- scale using the function 
+Scale(x)
+
+# --- end of chapter 9
+
+# --- chapter 10
+
+> magic <- read.csv("magic04.data", header = FALSE)
+> names(magic) <- c("FLENGTH", "FWIDTH", "FSIZE", "FCONC", "FCONC1",
+  "FASYM", "FM3LONG", "FM3TRANS", "FALPHA", "FDIST", "CLASS")
+> magic$CLASS <- as.factor(ifelse(magic$CLASS =='g', 1, -1))
+
+> library(caret)
+> set.seed(33711209)
+> magic_sampling_vector <- createDataPartition(magic$CLASS, 
+                             p = 0.80, list = FALSE)
+> magic_train <- magic[magic_sampling_vector, 1:10]
+> magic_train_output <- magic[magic_sampling_vector, 11]
+> magic_test <- magic[-magic_sampling_vector, 1:10]
+> magic_test_output <- magic[-magic_sampling_vector, 11]
+> magic_pp <- preProcess(magic_train, method = c("center", 
+                                                 "scale"))
+> magic_train_pp <- predict(magic_pp, magic_train)
+> magic_train_df_pp <- cbind(magic_train_pp, 
+                             CLASS = magic_train_output)
+> magic_test_pp <- predict(magic_pp, magic_test)
+> library(nnet)
+> n_model <- nnet(CLASS ~ ., data = magic_train_df_pp, size = 1)
+> n_test_predictions <- predict(n_model, magic_test_pp,
+                                type = "class")
+> (n_test_accuracy <- mean(n_test_predictions ==  
+                           magic_test_output))
+[1] 0.7948988
+AdaBoostNN <- function(training_data, output_column, M,  
+                       hidden_units) {
+  require("nnet")
+  models <- list()
+  alphas <- list()
+  n <- nrow(training_data)
+  model_formula <- as.formula(paste(output_column, '~ .', sep = ''))
+  w <- rep((1/n), n)
+  for (m in 1:M) {
+    model <- nnet(model_formula, data = training_data, 
+                size = hidden_units, weights = w)
+    models[[m]] <- model
+    predictions <- as.numeric(predict(model, 
+                    training_data[, -which(names(training_data) ==
+                    output_column)], type = "class"))
+    errors <- predictions != training_data[, output_column]
+    error_rate <- sum(w * as.numeric(errors)) / sum(w)
+    alpha <- 0.5 * log((1 - error_rate) / error_rate)
+    alphas[[m]] <- alpha
+    temp_w <- mapply(function(x, y) if (y) { x * exp(alpha) } 
+                    else { x * exp(-alpha)}, w, errors)
+    w <- temp_w / sum(temp_w)
+  }
+  return(list(models = models, alphas = unlist(alphas)))
+}
+AdaBoostNN.predict <- function(ada_model, test_data) {
+  models <- ada_model$models
+  alphas <- ada_model$alphas
+  prediction_matrix <- sapply(models, function (x) 
+             as.numeric(predict(x, test_data, type = "class")))
+  weighted_predictions <- t(apply(prediction_matrix, 1, 
+             function(x) mapply(function(y, z) y * z, x, alphas)))
+  final_predictions <- apply(weighted_predictions, 1, 
+             function(x) sign(sum(x)))
+  return(final_predictions)
+}
+> ada_model <- AdaBoostNN(magic_train_df_pp, 'CLASS', 10, 1)
+> predictions <- AdaBoostNN.predict(ada_model, magic_test_pp, 
+                                    'CLASS')
+> mean(predictions == magic_test_output)
+ [1] 0.804365
+
+# --- end chapter 10
+
+# --- chapter 11
+
+# --- load the data
+german_raw<- read.table("german.data", quote = "\"")
+
+names(german_raw) <- c("checking", "duration", "creditHistory", 
+"purpose", "credit", "savings", "employment", "installmentRate", 
+"personal", "debtors", "presentResidence", "property", "age", 
+"otherPlans", "housing", "existingBankCredits", "job", 
+"dependents", "telephone", "foreign", "risk")
+
+
+library(caret)
+dummies <- dummyVars(risk ~ ., data = german_raw)
+german<- data.frame(predict(dummies, newdata = german_raw), 
+                       risk = factor((german_raw$risk - 1)))
+dim(german)
+[1] 1000   62
+
+set.seed(977)
+german_sampling_vector<- createDataPartition(german$risk, 
+                                      p = 0.80, list = FALSE)
+german_train<- german[german_sampling_vector,]
+german_test<- german[-german_sampling_vector,]
+
+class_weights<- c(1, 5)
+names(class_weights) <- c("0", "1")
+class_weights
+0 1 
+1 5
+
+set.seed(2423)
+german_radial_tune<- tune(svm,risk ~ ., data = german_train, 
+  kernel = "radial", ranges = list(cost = c(0.01, 0.1, 1, 10, 100), 
+  gamma = c(0.01, 0.05, 0.1, 0.5, 1)), class.weights = class_weights)
+german_radial_tune$best.parameters
+   cost gamma
+9  10  0.05
+
+german_radial_tune$best.performance
+[1] 0.26
+
+german_model<- german_radial_tune$best.model
+test_predictions<- predict(german_model, german_test[,1:61])
+ mean(test_predictions == german_test[,62])
+[1] 0.735
+
+table(predicted = test_predictions, actual = german_test[,62])
+         actual
+predicted   0   1
+        0 134  47
+        1   6  13
+
+set.seed(2423)
+german_radial_tune_unbiased<- tune(svm,risk ~ ., 
+  data = german_train, kernel = "radial", ranges = list( 
+cost = c(0.01, 0.1, 1, 10, 100), gamma = c(0.01, 0.05, 0.1, 0.5, 1)))
+german_radial_tune_unbiased$best.parameters
+  cost gamma
+3    1  0.01
+german_radial_tune_unbiased$best.performance
+
+
+# --- end of chapter 11
+
+# -- chapter 12
+# --- no codes in chapter 12
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
